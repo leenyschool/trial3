@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>개념 쏙쏙 문제은행</title>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #f4f7f6; text-align: center; padding: 50px; }
+        .quiz-container { background: white; max-width: 500px; margin: auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .question { font-size: 1.3em; margin-bottom: 20px; font-weight: bold; word-break: keep-all; }
+        .options button { display: block; width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; background: #fff; font-size: 1em; cursor: pointer; transition: 0.2s; }
+        .options button:hover { background: #e9ecef; }
+        #result { margin-top: 20px; font-weight: bold; font-size: 1.1em; }
+        #next-btn { display: none; margin: 20px auto 0; padding: 10px 20px; background: #4285f4; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 1em; }
+        #next-btn:hover { background: #3367d6; }
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h2>📝 우리 반 문제은행</h2>
+    <div id="quiz">
+        <div class="question" id="question-text">문제가 여기에 나옵니다.</div>
+        <div class="options" id="options"></div>
+    </div>
+    <div id="result"></div>
+    <button id="next-btn">다음 문제 ➔</button>
+</div>
+
+<script>
+    // 💡 여기에 원하는 문제와 정답을 계속 추가하면 돼!
+    const quizData = [
+        {
+            question: "다음 중 르네상스 시대의 대표적인 예술가가 아닌 사람은?",
+            options: ["레오나르도 다빈치", "미켈란젤로", "얀 반 에이크", "파블로 피카소"],
+            answer: "파블로 피카소"
+        },
+        {
+            question: "스페인의 수도는 어디일까요?",
+            options: ["리스본", "마드리드", "바르셀로나", "세비야"],
+            answer: "마드리드"
+        }
+    ];
+
+    let currentQuestion = 0;
+    const questionEl = document.getElementById("question-text");
+    const optionsEl = document.getElementById("options");
+    const resultEl = document.getElementById("result");
+    const nextBtn = document.getElementById("next-btn");
+
+    function loadQuestion() {
+        resultEl.innerText = "";
+        nextBtn.style.display = "none";
+        optionsEl.innerHTML = "";
+        
+        const currentQuiz = quizData[currentQuestion];
+        questionEl.innerText = currentQuiz.question;
+
+        currentQuiz.options.forEach(option => {
+            const button = document.createElement("button");
+            button.innerText = option;
+            button.onclick = () => checkAnswer(option, button);
+            optionsEl.appendChild(button);
+        });
+    }
+
+    function checkAnswer(selectedOption, button) {
+        const correctAnswer = quizData[currentQuestion].answer;
+        const allButtons = optionsEl.querySelectorAll("button");
+        allButtons.forEach(btn => btn.disabled = true); // 한 번 누르면 다른 버튼 못 누르게 막기
+
+        if (selectedOption === correctAnswer) {
+            resultEl.innerText = "🎉 정답입니다!";
+            resultEl.style.color = "#34a853";
+            button.style.background = "#e6f4ea";
+            button.style.borderColor = "#34a853";
+        } else {
+            resultEl.innerText = "❌ 오답입니다. (정답: " + correctAnswer + ")";
+            resultEl.style.color = "#ea4335";
+            button.style.background = "#fce8e6";
+            button.style.borderColor = "#ea4335";
+        }
+        nextBtn.style.display = "block";
+    }
+
+    nextBtn.onclick = () => {
+        currentQuestion++;
+        if (currentQuestion < quizData.length) {
+            loadQuestion();
+        } else {
+            questionEl.innerText = "🏆 모든 문제를 다 풀었습니다! 수고했어요.";
+            optionsEl.innerHTML = "";
+            resultEl.innerText = "";
+            nextBtn.style.display = "none";
+        }
+    };
+
+    // 첫 문제 불러오기
+    loadQuestion();
+</script>
+
+</body>
+</html>
